@@ -6,10 +6,12 @@
  * actions / RSC) or `lib/api/browser.ts` (client components) instead.
  */
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { env } from 'next-runtime-env';
+
+export const API_BASE = env('NEXT_PUBLIC_API_URL') || 'http://localhost:8000';
 
 // Server-to-server base URL (e.g. container networking). Falls back to API_BASE.
-export const API_INTERNAL_BASE = process.env.API_INTERNAL_URL || API_BASE;
+export const API_INTERNAL_BASE = env('API_INTERNAL_URL') || API_BASE;
 
 export class ApiError extends Error {
   status: number;
