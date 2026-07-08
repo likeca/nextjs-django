@@ -1,0 +1,529 @@
+{
+	"info": {
+		"_postman_id": "e4ffe751-6b66-4012-ad9e-a70db04ed0bf",
+		"name": "Django",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GraphQL",
+			"item": [
+				{
+					"name": "Query All Books",
+					"id": "42064681-1372-4a4a-927e-e594008c384d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\r\n  allBooks {\r\n    id\r\n    title\r\n    author\r\n    yearPublished\r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": "http://localhost:8000/graphql/"
+					},
+					"response": []
+				},
+				{
+					"name": "Query Book by ID",
+					"id": "6aeaa45a-a654-472e-a25b-50fb4db79b77",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($bookId: Int) {\r\n  book(bookId: $bookId) {\r\n    id\r\n    title\r\n    author\r\n  }\r\n}",
+								"variables": "{\r\n    \"bookId\": 1\r\n}"
+							}
+						},
+						"url": "http://localhost:8000/graphql/"
+					},
+					"response": []
+				}
+			],
+			"id": "b589f924-0c7e-4116-9a15-3aacd0681fd5"
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c8e5be36-32dc-4e14-9ade-a099697f6a78",
+								"exec": [
+									"var xsrfCookie = postman.getResponseCookie(\"csrftoken\"); ",
+									"postman.setEnvironmentVariable('csrftoken', xsrfCookie.value);",
+									"",
+									"var jsonData = pm.response.json();",
+									"var accessToken = jsonData.key;",
+									"// pm.collectionVariables.set(\"djangoToken\", accessToken);",
+									"postman.setEnvironmentVariable(\"djangoToken\", accessToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3c5fa0c1-0bd2-4e77-b0b7-74a5162d2173",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "091ba557-6435-4ca4-9fd6-0175ebe935a7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CSRFToken",
+								"value": "{{csrftoken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{baseUrl}}/api/auth/login/"
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"id": "04d57c8a-06a7-407e-9df3-cd73a8085e15",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://{{baseUrl}}/api/auth/logout/"
+					},
+					"response": []
+				}
+			],
+			"id": "fea542b9-a477-4820-8add-9e30271d7b77"
+		},
+		{
+			"name": "Query",
+			"item": [
+				{
+					"name": "Get Users",
+					"id": "e92fb53d-3f85-44dc-9d10-29145d45c0ba",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{djangoToken}}",
+								"type": "text"
+							},
+							{
+								"key": "X-CSRFToken",
+								"value": "{{csrftoken}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}/api/users/"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Groups",
+					"id": "c41994c7-6f65-49f5-9d9f-8a816e4ab42c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/groups/"
+					},
+					"response": []
+				}
+			],
+			"id": "79b97dff-cb07-4c63-bbc7-5631d85c034f"
+		},
+		{
+			"name": "Scratch",
+			"item": [
+				{
+					"name": "API",
+					"item": [
+						{
+							"name": "Get Project by ID",
+							"id": "a3457532-8221-4666-aee8-4108e28b8e68",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{baseUrl}}/api/project/49"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Session",
+							"id": "69cb86f1-a19f-4b5c-b859-bd0f5b1ec163",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "sessionid",
+										"value": "o4luhyame1d7p9elqocnkf7ex3s610d5",
+										"type": "text"
+									},
+									{
+										"key": "csrftoken",
+										"value": "DIqNu8M7wWAcz6BrrYM0fnisY00x76b9BkpKTsAVyFAK4YW37KOu9ELVSh5LWeOl",
+										"type": "text"
+									}
+								],
+								"url": "{{baseUrl}}/api/session"
+							},
+							"response": []
+						}
+					],
+					"id": "bbb795a2-2496-4931-9065-26eeae083a1d"
+				}
+			],
+			"id": "62daf882-ae47-4e61-9f5c-f69696aaef84"
+		},
+		{
+			"name": "Egorders",
+			"item": [
+				{
+					"name": "info",
+					"id": "1de5d6e5-966d-4151-a78e-0ac1dd9aa299",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/clients/{{clientId}}/"
+					},
+					"response": []
+				},
+				{
+					"name": "clients",
+					"id": "058b10f5-173d-47e4-90c2-0340da640a3d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/clients/"
+					},
+					"response": []
+				},
+				{
+					"name": "categories",
+					"id": "2d1e8c66-db91-46dc-bc7f-120dcf929127",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/clients/{{clientId}}/categories/"
+					},
+					"response": []
+				},
+				{
+					"name": "items",
+					"id": "24a499a5-aea9-4e1d-b375-a4fc4e71fcb7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/clients/{{clientId}}/items/"
+					},
+					"response": []
+				},
+				{
+					"name": "addons",
+					"id": "b49f764c-3653-4c62-9610-8fdef757a7be",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/clients/{{clientId}}/addons/"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c8e5be36-32dc-4e14-9ade-a099697f6a78",
+								"exec": [
+									"var xsrfCookie = postman.getResponseCookie(\"csrftoken\"); ",
+									"postman.setEnvironmentVariable('csrftoken', xsrfCookie.value);",
+									"",
+									"var jsonData = pm.response.json();",
+									"var accessToken = jsonData.key;",
+									"postman.setEnvironmentVariable(\"djangoToken\", accessToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3c5fa0c1-0bd2-4e77-b0b7-74a5162d2173",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "57f31513-8c2b-4210-9374-2d1bbba8e9ca",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CSRFToken",
+								"value": "{{csrftoken}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{baseUrl}}/api/auth/login/"
+					},
+					"response": []
+				},
+				{
+					"name": "orders",
+					"id": "b7542c49-ce75-44af-b6e8-23dca2abd795",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{djangoToken}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}/api/clients/{{clientId}}/orders/"
+					},
+					"response": []
+				},
+				{
+					"name": "order",
+					"id": "f07eb4ef-a8f5-4abb-b78c-474347105173",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Order\": \"Order\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/api/clients/{{clientId}}/order/"
+					},
+					"response": []
+				},
+				{
+					"name": "stripe",
+					"id": "9e1d0119-4c7c-4ad9-a862-547488e7dd5d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"items\": [\r\n        {\r\n            \"id\": \"xl-tshirt\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/api/clients/{{clientId}}/order/payment/"
+					},
+					"response": []
+				}
+			],
+			"id": "9ec247b1-4f08-4a4b-91b0-5b62cb7f87bf"
+		},
+		{
+			"name": "Stripe",
+			"item": [
+				{
+					"name": "Get Stripe Key",
+					"id": "bdbcd106-3d7c-475e-8043-0a9c3b276dce",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:4242/stripe-key/"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Checkout Session",
+					"id": "9992df4a-d827-40ce-ad92-a8f684ccfd64",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:4242/create-checkout-session/"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Payment Intent",
+					"id": "960677c5-7fd4-4e71-9e6e-e0f3c4a93384",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"items\": [\r\n        {\r\n            \"id\": \"xl-tshirt\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/create-payment-intent"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Payment Intent Copy",
+					"id": "8a3ad0ff-c19b-422e-9124-b886fc9a925d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"items\": [\r\n        {\r\n            \"id\": \"xl-tshirt\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://192.168.1.109:8000/api/clients/33ce91cd-4b30-4168-9e6e-806f9c4e7bfd/order/payment/"
+					},
+					"response": []
+				}
+			],
+			"id": "d7946900-b441-4da8-92be-726587c2872f"
+		}
+	],
+	"variable": [
+		{
+			"key": "djangoToken",
+			"value": ""
+		}
+	]
+}

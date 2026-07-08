@@ -1,0 +1,11 @@
+{
+    "pylint.args": [
+        "--django-settings-module=nextjs_django.settings",
+        "--disable=line-too-long",
+        "--disable=missing-function-docstring",
+        "--disable=missing-class-docstring",
+        "--disable=missing-module-docstring",
+        "--disable=W0614,W0401"
+    ],
+    "liveServer.settings.port": 5501,
+}

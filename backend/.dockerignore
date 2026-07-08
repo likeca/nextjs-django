@@ -1,0 +1,26 @@
+# Virtualenv — rebuilt inside the image, never copy the host's (372MB)
+.venv/
+**/__pycache__/
+*.py[cod]
+
+# VCS & tooling
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+build.sh
+
+# Local data / artifacts not needed at runtime
+logs/
+Packages/
+Postman/
+Documents/
+*.sqlite3
+*.log
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+.env
+.env.*

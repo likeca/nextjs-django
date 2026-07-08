@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load static %}
+{% load socialaccount %}
+{% get_providers as socialaccount_providers %}
+{% for provider in socialaccount_providers %}
+    {% if provider.id == "openid" %}
+        {% for brand in provider.get_brands %}
+            <a title="{{ brand.name }}" class="socialaccount_provider {{ provider.id }} {{ brand.id }}" href="{% provider_login_url provider.id openid=brand.openid_url process=process %}">
+                {% blocktrans %}Sign in with{% endblocktrans %} {{ brand.name }}
+            </a>
+        {% endfor %}
+    {% endif %}
+    <a title="{{ provider.name }}" class="socialaccount_provider {{ provider.id }} font-weight-bold list-group-item list-group-item-action list-group-item-primary"" href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">
+        <img src="{% static 'site/img/socialaccount/' %}{{ provider.id }}.svg" width="20px" height="20px" style="margin-right: 5px;">
+        {% blocktrans %}Sign in with{% endblocktrans %} {{ provider.name }}
+    </a>
+{% endfor %}

@@ -1,0 +1,39 @@
+Django==5.2.3
+daphne>=4.1.0                       # Django ASGI deployment for production
+django-allauth==65.2.0              # Authentication, registration, account management as well as 3rd party (social) account authentication
+django-countries>=7.6.1             # Country for use with forms, flag icons static files, and a country field for models
+crispy-bootstrap5>=2025.4           # For Django forms - Bootstrap 5
+django-dbbackup>=4.2.1              # Backup and restore Django 3.0
+django-environ>=0.12.0              # django-environ allows you to use Twelve-factor methodology, used by base.py
+django-recaptcha>=4.1.0             # Google recaptcha v3
+django-compressor>=4.5.1            # Django Compressor Compress CSS and JS, $ pip install rcssmin --install-option="--without-c-extensions"
+django-libsass>=0.9                 # Django Compressor compile scss to css
+djangorestframework>=3.16.0         # REST Web APIs
+dj-rest-auth>=7.0.1                 # Django REST Authentication (django-allauth and djangorestframework)
+graphene-django>=3.2.3              # Graph QL
+
+hashids>=1.3.1                      # For generate encrypt id for path
+pillow>=11.2.1                      # Handle image
+requests>=2.32.3                    # HTTP requests
+
+google-api-python-client>=2.175.0   # Google API client library for Python
+google-auth>=2.40.3                 # Google Authentication Library for Python
+google-auth-oauthlib>=1.2.2         # Google OAuth2 Library for Python
+google-auth-httplib2>=0.2.0         # Google HTTP Client Library for Python
+
+# pyYAML==6.0.1                       # YAML for fixtures data load
+# stripe==10.2.0                      # Stripe Payment
+
+# whitenoise>=6.0.0                   # For none virtual machine deployment, serve static files
+
+# channels>=4.0.0                     # Django Channels to handle WebSockets, chat protocols, IoT protocols, etc.
+# channels_redis>=4.0.0               # Django Channels channel layers that use Redis as a backing store.
+
+# django-multiselectfield>=0.1.12   # Multiple select model and form field
+# django-q>=1.3.9                   # Django task queue (for Send Email, no use yet), use local database as broker, Celery does't support local database as broker
+# django-redis>=5.2.0               # Redis Cache for Django, need Redis Server !!!
+
+# TBD
+# djangorestframework-simplejwt       # A JSON Web Token authentication plugin for the Django REST Framework
+# PyJWT>=2.10.1                       # JSON Web Tokens (JWT) encode and decode 
+# djangorestframework-api-key>=2.2.0  # Django authentication use API Key

@@ -1,0 +1,31 @@
+@import "vars";
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    font-family: $font-family;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: $code-fonts;
+}
+
+.btn-primary {
+    border: none;
+    background-color: $primary_color;
+    font-weight: bold;
+}
+
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:hover {
+    outline: 2px solid $primary_color;
+    outline-offset: -2px;
+    background-color: $gray_100;
+    color: $primary_color;
+    box-shadow: none !important;
+    font-weight: bold;
+}

@@ -1,0 +1,49 @@
+[project]
+name = "nextjs_django"
+version = "0.1.0"
+description = "Django Skeleton Backend - Includes Django REST API and GraphQL"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django==6.0.3",
+    "daphne>=4.1.0",               # Django ASGI deployment for production
+    "django-allauth==65.14.3",     # Authentication, registration, account management as well as 3rd party (social) account authentication
+    "crispy-bootstrap5>=2026.3",   # For Django forms - Bootstrap 5
+    "django-compressor>=4.6.0",    # Django Compressor Compress CSS and JS, $ pip install rcssmin --install-option="--without-c-extensions"
+    "django-countries>=8.2.0",     # Country for use with forms, flag icons static files, and a country field for models
+    "django-dbbackup>=5.2.0",      # Backup and restore Database
+    "django-environ>=0.13.0",      # django-environ allows you to use Twelve-factor methodology, used by base.py
+    # "django-libsass>=0.9",         # Django Libsass is a Django app that provides a template tag for compiling Sass stylesheets# Django Compressor compile scss to css
+    "django-recaptcha>=4.1.0",     # Google recaptcha v3
+    "djangorestframework>=3.16.1", # REST Web APIs
+    "dj-rest-auth>=7.1.1",         # Django REST Authentication (django-allauth and djangorestframework)
+    "djangorestframework-simplejwt>=5.5.1", # JWT access/refresh tokens for DRF (used by dj-rest-auth USE_JWT)
+    "django-cors-headers>=4.9.0",  # CORS headers so the Next.js frontend can call the API
+    "stripe>=12.0.0",              # Stripe payments SDK (billing app)
+    "pyotp>=2.9.0",                # TOTP 2-factor authentication
+    "PyJWT>=2.10.1",               # JSON Web Tokens (JWT) encode and decode
+    "psycopg[binary]>=3.3.3",      # PostgreSQL database adapter for Python
+    # "jwt",                         # JSON Web Token Authentication
+
+    "google-api-python-client>=2.191.0", # Google API client library for Python
+    "google-auth==2.48.0",               # Google Authentication Library for Python
+    "google-auth-oauthlib>=1.3.0",       # Google OAuth2 Library for Python
+    "google-auth-httplib2>=0.3.0",       # Google HTTP Client Library for Python
+
+    "graphene-django>=3.2.3", # GraphQL support for Django
+    "hashids>=1.3.1",         # Hashids is a small open-source library that generates short, unique, non-sequential ids from numbers
+    "pillow>=12.1.1",         # Python Imaging Library (PIL) fork
+    "requests>=2.32.5",       # HTTP library for Python, for making API requests
+
+]
+
+[dependency-groups]
+dev = [
+    "django-browser-reload>=1.21.0", # Browser reload for Django development with Tailwind CSS
+    "django-debug-toolbar>=6.2.0",   # Debugging tool for Django
+    "djlint>=1.36.4",                # Formatter and linter for HTML templates for Django
+    "pylint>=4.0.5",                 # Python code static checker
+    # "pylint-django>=2.6.1",          # Pylint plugin for Django
+    "pyyaml>=6.0.3",   # YAML parser and emitter for Python
+    "werkzeug>=3.1.6", # WSGI utility library
+]

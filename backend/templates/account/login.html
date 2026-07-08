@@ -1,0 +1,46 @@
+{% extends "account/auth_base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load socialaccount %}
+
+{% block head_title %}{{ block.super }} - {% trans "Sign in" %}{% endblock head_title %}
+
+{% block extra_head_script %}
+    <script src='https://www.google.com/recaptcha/api.js' async defer></script>
+{% endblock extra_head_script %}
+
+{% block navbar_left %}
+  {% include '_navbar.html' %}
+{% endblock %}
+
+{% block form_heading %}
+    {% trans "Sign in" %}
+{% endblock %}
+
+{% block auth_content %}
+    {% get_providers as socialaccount_providers %}
+    {% if socialaccount_providers %}
+        <div class="list-group">
+            {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+        </div>
+        {% include "socialaccount/snippets/login_extra.html" %}
+    {% else %}
+        <p>
+            <span>{% trans "Don't have an account?" %} </span><a href="{{ signup_url }}">{% trans "Sign up" %}</a>
+        </p>
+    {% endif %}
+    <hr class="my-4">
+    {% include "socialaccount/snippets/login_extra.html" %}
+    <form class="login" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button class="btn btn-primary mb-3 fw-bold" type="submit">{% trans "Sign in" %}</button>
+    </form>
+    <br>
+    <div>
+        <a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+        <br>
+        <span>{% trans "Don't have an account?" %} </span><a href="{{ signup_url }}">{% trans "Sign up" %}</a>
+    </div>
+{% endblock auth_content%}

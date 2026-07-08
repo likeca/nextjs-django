@@ -1,0 +1,12 @@
+# docker run -it -p 8000:8000 django:latest --env-file .env
+# docker compose up -d
+services:
+  django:
+    image: likeca/django
+    container_name: django
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - nextjs_django/settings/local.env

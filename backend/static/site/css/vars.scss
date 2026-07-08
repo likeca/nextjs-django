@@ -1,0 +1,33 @@
+$font-family: -apple-system, "Twemoji Country Flags", "BlinkMacSystemFont", "Arial", "sans-serif", "Segoe UI", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue";
+$code-fonts: "source-code-pro", "Menlo", "Monaco", "Consolas", "Courier New", "monospace";
+
+$gray_900: #212529;
+$gray_800: #343a40;
+$gray_700: #495057;
+$gray_600: #6c757d;
+$gray_500: #adb5bd;
+$gray_400: #ced4da;
+$gray_300: #dee2e6;
+$gray_200: #e9ecef;
+$gray_100: #f8f9fa;
+
+$primary_color: #26b3fb;
+$second_color: #169aff;
+$border_gray: #ccc;
+$background_gray: #ededed;
+$background_light_gray: $gray_100;
+$announcement_red: #ae0000;
+$table_header: $gray_800;
+$transparent_100: rgba(0, 0, 0, 1);
+$transparent_75: rgba(0, 0, 0, 0.75);
+$transparent_50: rgba(0, 0, 0, 0.5);
+$transparent_25: rgba(0, 0, 0, 0.25);
+$transparent_0: rgba(0, 0, 0, 0);
+
+$base_font_size: 14px;
+$widget_border_radius: 4px;
+$table_header_rounding: 6px;
+
+$navbar_color: white;
+$navbar_background_color: $primary_color;
+$navbar_dropdown_background_color: $gray_800;

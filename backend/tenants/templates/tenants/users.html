@@ -1,0 +1,325 @@
+{% extends 'tenants/tenants_base.html' %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+  {{ block.super }} -{% trans 'Dashboard' %}
+{% endblock %}
+
+{% block navbar_left %}
+  {% include '_navbar.html' with active_link='dashboard' %}
+{% endblock %}
+
+{% block extra_head_script %}
+
+{% endblock %}
+
+{% block main_content %}
+  <div class="container-fluid mt-3" data-bs-theme="dark">
+    <div class="row mb-3" style="margin: 0px -5px;">
+      <div class="col">
+        <div class="d-inline-flex float-start text-white fw-bold me-2">
+          <label for="name" class="form-label align-content-center" style="min-width: 140px; margin-top: 0px; margin-bottom: 0px;">{% trans 'User Name Filter' %}:</label>
+          <input type="text" id="name" name="name" class="form-control form-control-sm" placeholder="{% trans 'Username' %}" />
+        </div>
+        {% comment %} <a href="{% url 'tenants:users' %}" class="btn btn-sm btn-success mx-1 fw-bold" data-bs-toggle="modal" data-bs-target="#add-user-modal" data-action="{% translate 'Add User' %}"><i class="bi bi-person-plus-fill fs-6"></i> {% trans 'Enable User' %}</a> {% endcomment %}
+        {% comment %} <a href="{% url 'tenants:users' %}" class="btn btn-sm btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#add-user-modal" data-action="{% translate 'Add User' %}"><i class="bi bi-person-plus-fill fs-6"></i> {% trans 'Disable User' %}</a> {% endcomment %}
+        {% comment %} <a href="{% url 'tenants:users' %}" class="btn btn-sm btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#add-user-modal" data-action="{% translate 'Add User' %}"><i class="bi bi-person-plus-fill fs-6"></i> {% trans 'Delete User' %}</a> {% endcomment %}
+        <div class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-user-modal" data-action="{% translate 'Add User' %}">
+          <i class="bi bi-person-plus-fill fs-6"></i> {% trans 'Add User' %}
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-2">
+      <div class="col border border-1 mx-3 rounded rounded-1">
+        <table class="table table-striped mt-3 table-hover" style="font-size: 0.8em;">
+          <thead>
+            <tr>
+              {% comment %} <th class="text-danger" scope="col" style="max-width: 20px;"></th> {% endcomment %}
+              <th class="text-danger" scope="col">#</th>
+              <th class="text-danger" scope="col">
+                {% trans 'Status' %}
+              </th>
+              <th class="text-danger" scope="col">
+                {% trans 'User' %}
+              </th>
+              <th class="text-danger" scope="col">
+                {% trans 'User Action' %}
+              </th>
+              <th class="text-danger" scope="col">
+                {% trans 'Channel' %}
+              </th>
+              {% comment %} <th class="text-danger" scope="col">
+                {% trans 'ID' %}
+              </th> {% endcomment %}
+              <th class="text-danger" scope="col">
+                {% trans 'Device UID' %}
+              </th>
+              <th class="text-danger" scope="col">
+                {% trans 'Serial' %}
+              </th>
+              <th class="text-danger" scope="col">
+                {% trans 'Issue Date' %}
+              </th>
+              <th class="text-danger" scope="col">
+                {% trans 'Expire Date' %}
+              </th>
+              {% comment %} <th class="text-danger" scope="col">
+                {% trans 'Revoke Date' %}
+              </th> {% endcomment %}
+              <th class="text-danger" scope="col">
+                {% trans 'Revoke' %}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% load tz %}
+            {% for user in users %}
+              <tr>
+                {% comment %} <td style="max-width: 20px;">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="user-check" value="{{ user.username }}" id="user-check-{{ forloop.counter }}" />
+                  </div>
+                </td> {% endcomment %}
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>
+                  {% if user.user_disabled %}
+                    <i class="bi bi-x-circle-fill text-danger"></i>
+                  {% else %}
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                  {% endif %}
+                </td>
+                <td>{{ user.username }}</td>
+                <td>
+                  {% if user.user_disabled %}
+                    <a href="#" class="btn btn-sm btn-success fw-bold border-0 m-1" data-bs-toggle="modal" data-bs-target="#user-action-modal" data-username="{{ user.username }}" data-action="{% translate 'Enable User' %}" data-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="user-tooltip" title="{% translate 'Enable User' %}" style="font-size: 0.9em;"><i class="bi bi-check-circle"></i></a>
+                  {% else %}
+                    <a href="#" class="btn btn-sm btn-primary m-1" data-bs-toggle="modal" data-bs-target="#user-action-modal" data-username="{{ user.username }}" data-action="{% translate 'Disable User' %}" data-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="user-tooltip" title="{% translate 'Disable User' %}" style="font-size: 0.9em;"><i class="bi bi-x-circle"></i></a>
+                  {% endif %}
+                  <a href="#" class="btn btn-sm btn-primary m-1" data-bs-toggle="modal" data-bs-target="#user-action-modal" data-username="{{ user.username }}" data-action="{% translate 'Delete User' %}" data-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="user-tooltip" title="{% translate 'Delete User' %}" style="font-size: 0.9em;"><i class="bi bi-trash"></i></a>
+                </td>
+                <td>{{ user.security_group|linebreaksbr }}</td>
+                {% comment %} <td class="p-0">
+                  <table class="w-100">
+                    <tbody>
+                      {% for device in user.devices %}
+                        <tr style="height: 46px; border-bottom: 1pt solid white;">
+                          <td style="height: 46px;">{{ device.id|safe }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </td> {% endcomment %}
+                <td class="p-0">
+                  <table class="w-100">
+                    <tbody>
+                      {% for device in user.devices %}
+                        <tr style="height: 46px; border-bottom: 1pt solid white;">
+                          <td style="height: 46px;">{{ device.clientUid|safe }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </td>
+                <td class="p-0">
+                  <table class="w-100">
+                    <tbody>
+                      {% for device in user.devices %}
+                        <tr style="height: 46px; border-bottom: 1pt solid white;">
+                          <td style="height: 46px;">{{ device.serialNumber|safe }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </td>
+                <td class="p-0">
+                  <table class="w-100">
+                    <tbody>
+                      {% for device in user.devices %}
+                        <tr style="height: 46px; border-bottom: 1pt solid white;">
+                          <td style="height: 46px;">{{ device.issuanceDate|date:'Y-m-d H:i:s' }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </td>
+                <td class="p-0">
+                  <table class="w-100">
+                    <tbody>
+                      {% for device in user.devices %}
+                        <tr style="height: 46px; border-bottom: 1pt solid white;">
+                          <td style="height: 46px;">{{ device.expirationDate|date:'Y-m-d H:i:s' }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </td>
+                {% comment %} <td class="p-0">
+                  <table class="w-100">
+                    <tbody>
+                      {% for device in user.devices %}
+                        <tr style="height: 46px; border-bottom: 1pt solid white;">
+                          <td style="height: 46px;">{{ device.revocationDate|date:'Y-m-d H:i:s' }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </td> {% endcomment %}
+                <td class="p-0">
+                  <table class="w-100">
+                    <tbody>
+                      {% for device in user.devices %}
+                        <tr style="height: 46px; border-bottom: 1pt solid white;">
+                          <td style="height: 46px;">
+                            <a href="#" class="btn btn-sm btn-primary m-1" data-bs-toggle="modal" data-bs-target="#revoke-cert-modal" data-action="{% translate 'Revoke Certificate' %}" data-username="{{ user.username }}" data-id="{{ device.id }}" data-clientuid="{{ device.clientUid }}" data-serialnumber="{{ device.serialNumber }}" data-issuancedate="{{ device.issuanceDate|date:'Y-m-d H:i:s' }}" data-expirationdate="{{ device.expirationDate|date:'Y-m-d H:i:s' }}" style="font-size: 0.9em;"><i class="bi bi-trash"></i> {% trans 'Revoke' %}</a>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal fade" id="user-action-modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 text-white" id="user-action-title"></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="row">
+                <div class="col">
+                  <label class="form-label text-white">{% translate 'User Name' %}: <span id="username">username</span></label>
+                  <input type="hidden" class="form-control" name="action" value="" />
+                  <input type="hidden" class="form-control" name="username" value="" />
+                  {% comment %} <input type="hidden" class="form-control" name="usercheck" value="" /> {% endcomment %}
+                </div>
+                <div class="col-1"></div>
+              </div>
+              <input type="submit" value="{% trans 'Submit' %}" class="btn btn-primary mb-3 px-4 float-end" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade modal-lg" id="revoke-cert-modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 text-white" id="cert-action-title">{% trans 'Revoke Certificate' %}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="row">
+                <div class="col">
+                  <label class="form-label text-white">{% translate 'User Name' %}: <span id="cert-username"></span></label>
+                  <br />
+                  <label class="form-label text-white">{% translate 'Device UID' %}: <span id="cert-clientuid"></span></label>
+                  <br />
+                  <label class="form-label text-white">{% translate 'Serial' %}: <span id="cert-serialnumber"></span></label>
+                  <br />
+                  <label class="form-label text-white">{% translate 'Serial' %}: <span id="cert-issuancedate"></span></label>
+                  <br />
+                  <label class="form-label text-white">{% translate 'Serial' %}: <span id="cert-expirationdate"></span></label>
+                  <input id="cert-action" type="hidden" class="form-control" name="action" value="" />
+                  <input id="cert-username" type="hidden" class="form-control" name="username" value="" />
+                  <input id="cert-username" type="hidden" class="form-control" name="certid" value="" />
+                </div>
+                <div class="col-1"></div>
+              </div>
+              <input type="submit" value="{% trans 'Submit' %}" class="btn btn-primary mb-3 px-4 float-end" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="add-user-modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 text-white" id="user-action-title">{% trans 'Add User' %}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="row">
+                <div class="col">
+                  <input type="hidden" class="form-control" name="action" value="Add User" />
+                  <div class="d-inline-flex float-start text-white fw-bold my-2">
+                    <label for="name" class="form-label align-content-center mb-0 me-2">{% trans 'Username' %}:</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="{% trans 'User name' %}" />
+                  </div>
+                  <div class="d-inline-flex float-start text-white fw-bold my-2">
+                    <label for="name" class="form-label align-content-center mb-0 me-2">{% trans 'Password' %}:</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="{% trans 'Password' %}" />
+                  </div>
+                </div>
+                <div class="col-1"></div>
+              </div>
+              <input type="submit" value="{% trans 'Submit' %}" class="btn btn-primary mb-3 px-4 float-end" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl))
+    
+      const userActionModal = document.getElementById('user-action-modal')
+      userActionModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget
+        const username = button.getAttribute('data-username')
+        const userActionTitle = button.getAttribute('data-action')
+        document.getElementById('user-action-title').innerHTML = userActionTitle
+        document.getElementById('username').innerHTML = username
+    
+        const actionInput = this.querySelector('input[name="action"]')
+        actionInput.value = userActionTitle
+        const usernameInput = this.querySelector('input[name="username"]')
+        usernameInput.value = username
+      })
+    
+      const certActionModal = document.getElementById('revoke-cert-modal')
+      certActionModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget
+        const username = button.getAttribute('data-username')
+        document.getElementById('cert-username').innerHTML = username
+        const clientUID = button.getAttribute('data-clientuid')
+        document.getElementById('cert-clientuid').innerHTML = clientUID
+        const serialNumber = button.getAttribute('data-serialnumber')
+        document.getElementById('cert-serialnumber').innerHTML = serialNumber
+        const issuanceDate = button.getAttribute('data-issuancedate')
+        document.getElementById('cert-issuancedate').innerHTML = issuanceDate
+        const expirationDate = button.getAttribute('data-expirationdate')
+        document.getElementById('cert-expirationdate').innerHTML = expirationDate
+    
+        const actionInput = this.querySelector('input[name="action"]')
+        actionInput.value = 'Revoke Certificate'
+        const usernameInput = this.querySelector('input[name="username"]')
+        usernameInput.value = username
+        const certID = button.getAttribute('data-id')
+        const certIdInput = this.querySelector('input[name="certid"]')
+        certIdInput.value = certID
+      })
+    })
+  </script>
+{% endblock %}

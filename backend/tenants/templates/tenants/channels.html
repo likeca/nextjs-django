@@ -1,0 +1,97 @@
+{% extends 'tenants/tenants_base.html' %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+  {{ block.super }} -{% trans 'Dashboard' %}
+{% endblock %}
+
+{% block navbar_left %}
+  {% include '_navbar.html' with active_link='dashboard' %}
+{% endblock %}
+
+{% block extra_head_script %}
+
+{% endblock %}
+
+{% block main_content %}
+  <div class="container-fluid mt-3" data-bs-theme="dark">
+    <div class="row mb-3" style="margin: 0px -5px;">
+      <div class="col">
+        <div class="d-inline-flex float-start text-white fw-bold">
+          <label for="name" class="form-label align-content-center" style="min-width: 120px; margin-top: 0px; margin-bottom: 0px;">{% trans 'Channel Filter' %}:</label>
+          <input type="text" id="name" name="name" class="form-control form-control-sm" placeholder="{% trans 'Channel Name' %}" />
+        </div>
+        <div class="btn btn-sm btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#add-channel-modal" data-action="{% translate 'Modify Channel' %}">
+          <i class="bi bi-person-plus-fill fs-6"></i> {% trans 'Modify Channel' %}
+        </div>
+        <div class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#add-channel-modal" data-action="{% translate 'Add Channel' %}">
+          <i class="bi bi-person-plus-fill fs-6"></i> {% trans 'Add Channel' %}
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-2">
+      <div class="col border border-1 mx-3 rounded rounded-1">
+        <table class="table table-striped mt-3 table-hover" style="font-size: 0.8em;">
+          <thead>
+            <tr>
+              <th class="text-danger" scope="col">#</th>
+              <th class="text-danger" scope="col">
+                {% trans 'Channel' %}
+              </th>
+              <th class="text-danger" scope="col">
+                {% trans 'User' %}
+              </th>
+              <th class="text-danger" scope="col">
+                {% trans 'Description' %}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for group in groups %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ group.security_group }}</td>
+                <td>{{ group.user_names|safe }}</td>
+                <td>{{ group.description }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal fade" id="add-channel-modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 text-white" id="channel-action-title">{% trans 'Add Channel' %}</h1>
+            <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="row">
+                <div class="col">
+                  <input type="hidden" class="form-control" name="action" value="Add Channel" />
+                  <div class="d-inline-flex float-start text-white fw-bold my-2">
+                    <label for="name" class="form-label align-content-center mb-0 me-2">{% trans 'Channel Name' %}:</label>
+                    <input type="text" id="channel_name" name="channel_name" class="form-control" placeholder="{% trans 'Channel name' %}" />
+                  </div>
+                </div>
+                <div class="col-1"></div>
+              </div>
+              <input type="submit" value="{% trans 'Submit' %}" class="btn btn-primary mb-3 px-4 float-end" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+
+{% endblock %}

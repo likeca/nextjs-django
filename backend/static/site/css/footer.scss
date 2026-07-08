@@ -1,0 +1,66 @@
+.footer {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    margin-top: 40px;
+    border-top: 1px solid #eee;
+}
+
+.social li {
+    width: auto;
+    float: right;
+    margin: 0;
+    list-style-type: none;
+}
+
+.social li a {
+    width: 25px;
+    height: 25px;
+    background: url("/static/site/img/social_media.svg");
+    background: rgba(0,0,0,0) url("/static/site/img/social_media.svg");
+    background-repeat: no-repeat;
+    background-size: 140px 280px;
+    margin: 0 0 0 3px;
+    display: block;
+}
+
+.social li a:hover, a:focus {
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    background-color: rgba(0,0,0,0);
+    background-position-x: -90px;
+}
+
+.social .social-facebook {
+    background-position: -60px 0;
+}
+.social .social-twitter {
+    background-position: -60px -28px;
+}
+.social .social-instagram {
+    background-position: -60px -56px;
+}
+.social .social-linkedin {
+    background-position: -60px -84px;
+}
+.social .social-more {
+    background-position: -60px -112px;
+}
+.social .social-pinterest {
+    background-position: -60px -140px;
+}
+.social .social-rss {
+    background-position: -60px -168px;
+}
+.social .social-tumblr {
+    background-position: -60px -196px;
+}
+.social .social-youtube {
+    background-position: -60px -224px;
+}
+.social .social-flickr {
+    background-position: -60px -252px;
+}
+

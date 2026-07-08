@@ -1,0 +1,163 @@
+@import "vars";
+
+@media (max-width: 796) {
+    .navbar-collapse {
+        background-color: white;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .navbar-nav>.nav-item {
+        margin: 5px 10px;
+    }
+
+    .collapse-signin {
+        padding: 10px;
+        margin: 10px 10px;
+    }
+
+    .collapse-language {
+        margin: 10px 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    #sidebar {
+        height: 60px;
+        width: 100%;
+        position: fixed;
+        top: unset;
+        bottom: 0;
+        background-color: yellow;
+    }
+}
+
+#mainNav {
+    transition: all 1s;
+}
+
+.navbar-nav>.nav-item {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.navbar-toggler-icon {
+    background-image: url("/static/site/img/menu-bar.svg");
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.navbar-toggler {
+    border: 0px;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler-icon:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.navbar-nav .nav-link {
+    color: $transparent_75;
+    padding: 4px;
+}
+
+.navbar-nav .nav-link.active {
+    color: $navbar_color;
+    background-color: $navbar_background_color;
+}
+
+a.nav-link:hover {
+    color: $navbar_color !important;
+    background-color: $navbar_background_color;
+}
+
+a.dropdown-item:hover {
+    color: $navbar_color !important;
+    background-color: $navbar_dropdown_background_color;
+}
+
+.nav-pills .nav-link {
+    margin: 5px 0px;
+}
+
+.nav-pills .nav-link.active {
+    color: $navbar_color;
+    border-radius: 0;
+    background-color: $navbar_background_color;
+}
+
+.nav-pills a.nav-link:hover {
+    color: $navbar_color;
+    border-radius: 0;
+    background-color: $navbar_background_color;
+}
+
+// .btn {
+//     padding: 3px 10px;
+// }
+
+// Sidebar
+.sidebar {
+    width: 180px;
+    transition: 300ms ease-in-out;
+    overflow: hidden;
+    text-wrap: nowrap;
+    padding: 5px 5px;
+}
+
+.sidebar.close {
+    width: 33px;
+    overflow: hidden;
+}
+
+.rotate svg:last-child {
+    transform: rotate(180deg);
+}
+
+.side-menu {
+    width: 180px;
+}
+
+.side-menu-text {
+    font-size: 14px;
+    // font-weight: 600;
+    color: $gray_900;
+    padding: 5px 5px;
+}
+
+.menu-category {
+    font-size: 14px;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-category svg {
+    transition: 300ms;
+}
+
+
+.sub-menu {
+    padding-left: 20px;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: 300ms ease-in-out;
+
+    >div {
+        overflow: hidden;
+    }
+}
+
+.sub-menu.show {
+    grid-template-rows: 1fr;
+}
+
+#toggle-btn {
+    cursor: pointer;
+
+    svg {
+        transition: rotate 300ms ease;
+    }
+}

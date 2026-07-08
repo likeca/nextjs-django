@@ -1,0 +1,13 @@
+# python -m venv .venv
+# python -m pip install --upgrade pip setuptools
+# pip install -r requirements\development.txt --upgrade
+
+-r base.txt
+
+Werkzeug
+django-debug-toolbar
+pylint
+pylint-django
+pyyaml
+# django-autotranslate
+# django-translations 
