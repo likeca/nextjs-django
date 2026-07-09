@@ -1,7 +1,7 @@
 services:
   backend:
     image: likeca/django
-    container_name: django
+    container_name: backend
     build:
       context: .
     ports:
@@ -11,7 +11,7 @@ services:
 
   frontend:
     image: likeca/nextjs
-    container_name: nextjs
+    container_name: frontend
     build:
       context: .
     ports:

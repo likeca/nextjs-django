@@ -1,8 +1,8 @@
-# from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group
 # from django.contrib.auth.mixins import LoginRequiredMixin
 # from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 # from tokenize import group
-# from .serializers import UserSerializer, GroupSerializer
+from .serializers import UserSerializer, GroupSerializer
 
 from django.conf import settings
 from rest_framework import permissions
@@ -47,57 +47,57 @@ class GroupView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
-        # group = Group.objects.all()
-        # serializer = GroupSerializer(group, many=True)
-        # return Response(serializer.data)
+        group = Group.objects.all()
+        serializer = GroupSerializer(group, many=True)
+        return Response(serializer.data)
 
-        data = [
-            {
-                "name": "Pizza da Mario 1",
-                "cuisine": "Italian",
-                "age": 7,
-                "reviews": [
-                    {"score": 4.5, "review": "The pizza was amazing!"},
-                    {"score": 5.0, "review": "Very friendly staff, excellent service!"},
-                ],
-            },
-            {
-                "name": "Pizza da Mario 2",
-                "cuisine": "Italian",
-                "age": 8,
-                "reviews": [
-                    {"score": 4.5, "review": "The pizza was amazing!"},
-                    {"score": 5.0, "review": "Very friendly staff, excellent service!"},
-                ],
-            },
-            {
-                "name": "Pizza da Mario 3",
-                "cuisine": "Italian",
-                "age": 9,
-                "reviews": [
-                    {"score": 4.5, "review": "The pizza was amazing!"},
-                    {"score": 5.0, "review": "Very friendly staff, excellent service!"},
-                ],
-            },
-            {
-                "name": "Pizza da Mario 4",
-                "cuisine": "Italian",
-                "age": 10,
-                "reviews": [
-                    {"score": 4.5, "review": "The pizza was amazing!"},
-                    {"score": 5.0, "review": "Very friendly staff, excellent service!"},
-                ],
-            },
-            {
-                "name": "Pizza da Mario 5",
-                "cuisine": "Italian",
-                "age": 11,
-                "reviews": [
-                    {"score": 4.5, "review": "The pizza was amazing!"},
-                    {"score": 5.0, "review": "Very friendly staff, excellent service!"},
-                ],
-            },
-        ]
+        # data = [
+        #     {
+        #         "name": "Pizza da Mario 1",
+        #         "cuisine": "Italian",
+        #         "age": 7,
+        #         "reviews": [
+        #             {"score": 4.5, "review": "The pizza was amazing!"},
+        #             {"score": 5.0, "review": "Very friendly staff, excellent service!"},
+        #         ],
+        #     },
+        #     {
+        #         "name": "Pizza da Mario 2",
+        #         "cuisine": "Italian",
+        #         "age": 8,
+        #         "reviews": [
+        #             {"score": 4.5, "review": "The pizza was amazing!"},
+        #             {"score": 5.0, "review": "Very friendly staff, excellent service!"},
+        #         ],
+        #     },
+        #     {
+        #         "name": "Pizza da Mario 3",
+        #         "cuisine": "Italian",
+        #         "age": 9,
+        #         "reviews": [
+        #             {"score": 4.5, "review": "The pizza was amazing!"},
+        #             {"score": 5.0, "review": "Very friendly staff, excellent service!"},
+        #         ],
+        #     },
+        #     {
+        #         "name": "Pizza da Mario 4",
+        #         "cuisine": "Italian",
+        #         "age": 10,
+        #         "reviews": [
+        #             {"score": 4.5, "review": "The pizza was amazing!"},
+        #             {"score": 5.0, "review": "Very friendly staff, excellent service!"},
+        #         ],
+        #     },
+        #     {
+        #         "name": "Pizza da Mario 5",
+        #         "cuisine": "Italian",
+        #         "age": 11,
+        #         "reviews": [
+        #             {"score": 4.5, "review": "The pizza was amazing!"},
+        #             {"score": 5.0, "review": "Very friendly staff, excellent service!"},
+        #         ],
+        #     },
+        # ]
 
         # data = [
         #     {"name": "John", "age": 30},
@@ -107,4 +107,4 @@ class GroupView(APIView):
         #     {"name": "Atom", "age": 66},
         #     {"name": "Atom", "age": 66},
         # ]
-        return Response(data)
+        # return Response(data)
