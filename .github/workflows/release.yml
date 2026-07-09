@@ -40,12 +40,16 @@ jobs:
       - name: Build and push backend
         uses: docker/build-push-action@v7
         with:
+          context: ./backend
+          file: ./backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/django:latest
 
       - name: Build and push frontend
         uses: docker/build-push-action@v7
         with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/nextjs:latest
 
