@@ -5,16 +5,31 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Django",
+      "name": "Backend: Django",
       "type": "debugpy",
       "request": "launch",
       "cwd": "${workspaceFolder}/backend",
       "program": "${workspaceFolder}/backend/manage.py",
+      "python": "${workspaceFolder}/backend/.venv/bin/python",
       "args": ["runserver", "0.0.0.0:8000"],
       "env": {
         "DJANGO_ENVIRONMENT": "Development"
       },
       "django": true
+    },
+    {
+      "name": "Frontend: Next.js",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm dev",
+      "cwd": "${workspaceFolder}/frontend"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: Django + Next.js",
+      "configurations": ["Backend: Django", "Frontend: Next.js"],
+      "stopAll": true
     }
   ]
 }
