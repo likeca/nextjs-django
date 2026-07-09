@@ -41,13 +41,13 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.FOLDER }}/backend/django:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/django:latest
 
       - name: Build and push frontend
         uses: docker/build-push-action@v7
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.FOLDER }}/frontend/nextjs:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/nextjs:latest
 
       - name: Remote ssh
         uses: appleboy/ssh-action@master
