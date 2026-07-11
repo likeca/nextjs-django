@@ -17,4 +17,6 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 RUN mkdir -p logs
 
 EXPOSE 8000
-CMD ["uv", "run", "manage.py", "runserver", "0.0.0.0:8000"]
+# Daphne (ASGI) instead of the single-threaded dev server; asgi.py picks the
+# settings module from DJANGO_ENVIRONMENT (defaults to container).
+CMD ["uv", "run", "daphne", "-b", "0.0.0.0", "-p", "8000", "nextjs_django.asgi:application"]

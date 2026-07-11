@@ -76,3 +76,7 @@ auth/RBAC/CRUD/billing/API-keys/orgs/dashboard/OTP/2FA smoke-tested ·
 frontend `tsc --noEmit` = 0 errors · production `next build` succeeds ·
 end-to-end with both servers live (a blog created via the Django API renders through
 the Next.js SSR pages).
+
+
+# Locally
+docker compose up --build

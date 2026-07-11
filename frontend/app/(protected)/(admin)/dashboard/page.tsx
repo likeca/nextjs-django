@@ -1,14 +1,14 @@
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
-import { getDashboardStats } from "./actions"
+import { ChartAreaInteractive } from '@/components/chart-area-interactive';
+import { DataTable } from '@/components/data-table';
+import { SectionCards } from '@/components/section-cards';
+import { getDashboardStats } from './actions';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
-import data from "./data.json"
+import data from './data.json';
 
 export default async function Page() {
-  const stats = await getDashboardStats()
+  const stats = await getDashboardStats();
 
   return (
     <div className="flex flex-1 flex-col">
@@ -22,5 +22,5 @@ export default async function Page() {
         </div>
       </div>
     </div>
-  )
+  );
 }

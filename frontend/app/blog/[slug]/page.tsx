@@ -1,65 +1,65 @@
-import { notFound } from "next/navigation"
-import { serverTry } from "@/lib/api/server"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
-import type { Metadata } from "next"
-import DOMPurify from "isomorphic-dompurify"
-import { JsonLd } from "@/components/json-ld"
-import { articleSchema, breadcrumbSchema } from "@/lib/seo"
-import { appConfig } from "@/lib/config"
+import { notFound } from 'next/navigation';
+import { serverTry } from '@/lib/api/server';
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
+import type { Metadata } from 'next';
+import DOMPurify from 'isomorphic-dompurify';
+import { JsonLd } from '@/components/json-ld';
+import { articleSchema, breadcrumbSchema } from '@/lib/seo';
+import { appConfig } from '@/lib/config';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 interface BlogPostPageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }
 
 interface BlogPost {
-  id: string
-  title: string
-  slug: string
-  content: string
-  excerpt: string | null
-  author: { name: string } | null
-  createdAt: string
-  updatedAt: string
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string | null;
+  author: { name: string } | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const { slug } = await params
-  const res = await serverTry<BlogPost>(`/api/blogs/slug/${slug}/`)
-  const post = "error" in res ? null : res.data
+  const { slug } = await params;
+  const res = await serverTry<BlogPost>(`/api/blogs/slug/${slug}/`);
+  const post = 'error' in res ? null : res.data;
 
-  if (!post) return { title: "Post not found" }
+  if (!post) return { title: 'Post not found' };
 
-  const url = `${appConfig.url}/blog/${slug}`
+  const url = `${appConfig.url}/blog/${slug}`;
 
   return {
     title: post.title,
     description: post.excerpt ?? undefined,
-    keywords: ["blog", "article", "SaaS", slug.replace(/-/g, " ")],
+    keywords: ['blog', 'article', 'SaaS', slug.replace(/-/g, ' ')],
     alternates: { canonical: url },
     openGraph: {
       title: post.title,
       description: post.excerpt ?? undefined,
       url,
-      type: "article",
+      type: 'article',
       siteName: appConfig.name,
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title: post.title,
       description: post.excerpt ?? undefined,
     },
-  }
+  };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params
-  const res = await serverTry<BlogPost>(`/api/blogs/slug/${slug}/`)
-  const post = "error" in res ? null : res.data
+  const { slug } = await params;
+  const res = await serverTry<BlogPost>(`/api/blogs/slug/${slug}/`);
+  const post = 'error' in res ? null : res.data;
 
-  if (!post) notFound()
+  if (!post) notFound();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -67,15 +67,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         data={[
           articleSchema({
             title: post.title,
-            description: post.excerpt ?? "",
+            description: post.excerpt ?? '',
             slug: post.slug,
             authorName: post.author?.name ?? undefined,
             publishedAt: new Date(post.createdAt).toISOString(),
             modifiedAt: post.updatedAt ? new Date(post.updatedAt).toISOString() : undefined,
           }),
           breadcrumbSchema([
-            { name: "Home", path: "/" },
-            { name: "Blog", path: "/blog" },
+            { name: 'Home', path: '/' },
+            { name: 'Blog', path: '/blog' },
             { name: post.title, path: `/blog/${post.slug}` },
           ]),
         ]}
@@ -87,23 +87,41 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {post.author?.name && <span>By {post.author.name}</span>}
             <span>·</span>
             <time>
-              {new Date(post.createdAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
+              {new Date(post.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
               })}
             </time>
           </div>
           <h1 className="text-4xl font-bold tracking-tight">{post.title}</h1>
-          {post.excerpt && (
-            <p className="mt-4 text-xl text-muted-foreground">{post.excerpt}</p>
-          )}
+          {post.excerpt && <p className="mt-4 text-xl text-muted-foreground">{post.excerpt}</p>}
         </div>
         <div
           className="prose prose-neutral dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(post.content, {
-              ALLOWED_TAGS: ['p', 'b', 'i', 'em', 'strong', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'blockquote', 'code', 'pre'],
+              ALLOWED_TAGS: [
+                'p',
+                'b',
+                'i',
+                'em',
+                'strong',
+                'a',
+                'ul',
+                'ol',
+                'li',
+                'h1',
+                'h2',
+                'h3',
+                'h4',
+                'h5',
+                'h6',
+                'img',
+                'blockquote',
+                'code',
+                'pre',
+              ],
               ALLOWED_ATTR: ['href', 'src', 'alt', 'class'],
               ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
             }),
@@ -117,5 +135,5 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

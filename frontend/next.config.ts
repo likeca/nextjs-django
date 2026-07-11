@@ -7,6 +7,11 @@ const apiOrigin = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const nextConfig: NextConfig = {
   output: 'standalone',
   async headers() {
+    // Dev: CSP's upgrade-insecure-requests/connect-src break the HMR
+    // websocket, making the browser reload the page in a loop.
+    if (process.env.NODE_ENV !== 'production') {
+      return [];
+    }
     return [
       {
         source: '/(.*)',

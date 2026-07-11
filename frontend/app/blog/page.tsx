@@ -1,34 +1,35 @@
-import Link from "next/link"
-import { serverTry } from "@/lib/api/server"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
-import { formatDistanceToNow } from "date-fns"
-import { buildMetadata } from "@/lib/seo"
+import Link from 'next/link';
+import { serverTry } from '@/lib/api/server';
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
+import { formatDistanceToNow } from 'date-fns';
+import { buildMetadata } from '@/lib/seo';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 export const metadata = buildMetadata({
-  title: "Blog — Latest Articles & Updates",
-  description: "Read our latest articles on SaaS development, web technologies, product updates, and best practices for building modern applications.",
-  path: "/blog",
-  keywords: ["blog", "articles", "SaaS", "web development", "tutorials", "updates"],
-})
+  title: 'Blog — Latest Articles & Updates',
+  description:
+    'Read our latest articles on SaaS development, web technologies, product updates, and best practices for building modern applications.',
+  path: '/blog',
+  keywords: ['blog', 'articles', 'SaaS', 'web development', 'tutorials', 'updates'],
+});
 
 interface BlogListItem {
-  id: string
-  title: string
-  slug: string
-  excerpt: string | null
-  createdAt: string
-  author: { name: string } | null
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  createdAt: string;
+  author: { name: string } | null;
 }
 
 export default async function BlogPage() {
   // Public, published posts from the Django backend.
-  const res = await serverTry<{ results: BlogListItem[] }>("/api/blogs/", {
-    query: { published: "true" },
-  })
-  const posts: BlogListItem[] = "error" in res ? [] : res.data.results
+  const res = await serverTry<{ results: BlogListItem[] }>('/api/blogs/', {
+    query: { published: 'true' },
+  });
+  const posts: BlogListItem[] = 'error' in res ? [] : res.data.results;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -59,9 +60,7 @@ export default async function BlogPage() {
                   <h2 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
                     <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                   </h2>
-                  {post.excerpt && (
-                    <p className="text-sm text-muted-foreground line-clamp-3">{post.excerpt}</p>
-                  )}
+                  {post.excerpt && <p className="text-sm text-muted-foreground line-clamp-3">{post.excerpt}</p>}
                   <Link
                     href={`/blog/${post.slug}`}
                     className="inline-block mt-4 text-sm font-medium text-primary hover:underline"
@@ -76,5 +75,5 @@ export default async function BlogPage() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

@@ -39,12 +39,12 @@ TEMPLATES[0].update({"APP_DIRS": False})
 # For production only
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
-# Disable browsable API render of django-rest-framework
-REST_FRAMEWORK = {
-    "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
-    ],
-}
+# Disable browsable API render of django-rest-framework.
+# Mutate (don't reassign) so pagination/auth/permission defaults from
+# settings/rest.py survive — reassigning wiped them in this environment.
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
+    "rest_framework.renderers.JSONRenderer",
+]
 
 # Log everything to the logs directory at the top
 LOGFILE_ROOT = BASE_DIR.joinpath("logs")
