@@ -1,17 +1,32 @@
-"use client";
+'use client';
 
 /**
  * Django-backed auth client. Drop-in replacement for the former better-auth
  * client: exposes the same surface (signIn / signUp / signOut / useSession /
- * changePassword / emailOtp) so existing components keep working, but talks to
- * the Django dj-rest-auth + SimpleJWT endpoints.
+ * changePassword / emailOtp) so existing components keep working.
  *
- * Token storage + transparent refresh live in lib/api/browser.ts.
+ * Every call is delegated to a Server Action (actions/auth/auth-actions.ts),
+ * so the actual HTTP request to Django happens on the Next.js server over
+ * API_INTERNAL_BASE — the browser never talks to Django. Token cookies are
+ * set/cleared by the actions on their responses.
  */
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from 'react';
 
-import { ApiError, API_BASE, request } from "./api/client";
-import { clearTokens, getAccessToken, storeTokens } from "./api/browser";
+import {
+  changePasswordAction,
+  getSessionAction,
+  loginAction,
+  logoutAction,
+  otpSendAction,
+  otpVerifyAction,
+  requestPasswordResetAction,
+  resetPasswordAction,
+  signupAction,
+  twoFactorDisableAction,
+  twoFactorEnableAction,
+  twoFactorLoginVerifyAction,
+  twoFactorVerifyAction,
+} from '@/actions/auth/auth-actions';
 
 export interface AuthUser {
   id: string;
@@ -34,9 +49,7 @@ type Result<T> = { data: T; error: null } | { data: null; error: { message: stri
 function ok<T>(data: T): Result<T> {
   return { data, error: null };
 }
-function fail<T = null>(e: unknown): Result<T> {
-  const message =
-    e instanceof ApiError ? e.message : e instanceof Error ? e.message : "Request failed";
+function fail<T = null>(message: string): Result<T> {
   return { data: null, error: { message } };
 }
 
@@ -57,16 +70,9 @@ function setSession(data: Session | null, isPending = false) {
 }
 
 export async function fetchSession(): Promise<Session | null> {
-  if (!getAccessToken()) {
-    setSession(null, false);
-    return null;
-  }
   try {
-    const user = await request<AuthUser>("/api/auth/user/", {
-      token: getAccessToken(),
-      baseUrl: API_BASE,
-    });
-    const session = { user };
+    const user = await getSessionAction();
+    const session = user ? { user } : null;
     setSession(session, false);
     return session;
   } catch {
@@ -101,27 +107,17 @@ let pendingPreAuthToken: string | null = null;
 // ─── signIn / signUp / signOut ────────────────────────────────────────────────
 export const signIn = {
   async email({ email, password }: { email: string; password: string; callbackURL?: string }) {
-    try {
-      const res = await request<{
-        access?: string;
-        refresh?: string;
-        user?: AuthUser;
-        twoFactorRequired?: boolean;
-        preAuthToken?: string;
-      }>("/api/auth/login/", { method: "POST", body: { email, password }, baseUrl: API_BASE });
+    const res = await loginAction({ email, password });
+    if (!res.ok) return fail(res.error);
 
-      // 2FA-enabled account: no tokens yet — surface the redirect the login form expects.
-      if (res.twoFactorRequired && res.preAuthToken) {
-        pendingPreAuthToken = res.preAuthToken;
-        return ok({ twoFactorRedirect: true });
-      }
-
-      storeTokens(res.access!, res.refresh);
-      if (res.user) setSession({ user: res.user }, false);
-      return ok({ user: res.user });
-    } catch (e) {
-      return fail(e);
+    // 2FA-enabled account: no tokens yet — surface the redirect the login form expects.
+    if (res.data.twoFactorRequired && res.data.preAuthToken) {
+      pendingPreAuthToken = res.data.preAuthToken;
+      return ok({ twoFactorRedirect: true });
     }
+
+    if (res.data.user) setSession({ user: res.data.user }, false);
+    return ok({ user: res.data.user });
   },
 };
 
@@ -136,37 +132,15 @@ export const signUp = {
     name: string;
     callbackURL?: string;
   }) {
-    try {
-      const res = await request<{ access?: string; refresh?: string; user?: AuthUser }>(
-        "/api/auth/registration/",
-        {
-          method: "POST",
-          body: { email, name, password1: password, password2: password },
-          baseUrl: API_BASE,
-        },
-      );
-      if (res.access) {
-        storeTokens(res.access, res.refresh);
-        if (res.user) setSession({ user: res.user }, false);
-      }
-      return ok({ user: res.user ?? null });
-    } catch (e) {
-      return fail(e);
-    }
+    const res = await signupAction({ email, name, password });
+    if (!res.ok) return fail(res.error);
+    if (res.data.user) setSession({ user: res.data.user }, false);
+    return ok({ user: res.data.user });
   },
 };
 
 export async function signOut() {
-  try {
-    await request("/api/auth/logout/", {
-      method: "POST",
-      token: getAccessToken(),
-      baseUrl: API_BASE,
-    });
-  } catch {
-    // ignore — we clear locally regardless
-  }
-  clearTokens();
+  await logoutAction(); // clears token cookies server-side
   setSession(null, false);
 }
 
@@ -179,35 +153,14 @@ export async function changePassword({
   newPassword: string;
   revokeOtherSessions?: boolean;
 }) {
-  try {
-    const data = await request("/api/auth/password/change/", {
-      method: "POST",
-      token: getAccessToken(),
-      baseUrl: API_BASE,
-      body: {
-        old_password: currentPassword,
-        new_password1: newPassword,
-        new_password2: newPassword,
-      },
-    });
-    return ok(data);
-  } catch (e) {
-    return fail(e);
-  }
+  const res = await changePasswordAction({ currentPassword, newPassword });
+  return res.ok ? ok(res.data) : fail(res.error);
 }
 
 // ─── Password reset (dj-rest-auth) ────────────────────────────────────────────
 export async function requestPasswordReset({ email }: { email: string }) {
-  try {
-    const data = await request("/api/auth/password/reset/", {
-      method: "POST",
-      baseUrl: API_BASE,
-      body: { email },
-    });
-    return ok(data);
-  } catch (e) {
-    return fail(e);
-  }
+  const res = await requestPasswordResetAction({ email });
+  return res.ok ? ok(res.data) : fail(res.error);
 }
 
 export async function resetPassword({
@@ -219,43 +172,19 @@ export async function resetPassword({
   token: string;
   newPassword: string;
 }) {
-  try {
-    const data = await request("/api/auth/password/reset/confirm/", {
-      method: "POST",
-      baseUrl: API_BASE,
-      body: { uid, token, new_password1: newPassword, new_password2: newPassword },
-    });
-    return ok(data);
-  } catch (e) {
-    return fail(e);
-  }
+  const res = await resetPasswordAction({ uid, token, newPassword });
+  return res.ok ? ok(res.data) : fail(res.error);
 }
 
 // ─── Email OTP (Django: /api/auth/otp/*) ──────────────────────────────────────
 export const emailOtp = {
   async sendVerificationOtp({ email, type }: { email: string; type?: string }) {
-    try {
-      const data = await request("/api/auth/otp/send/", {
-        method: "POST",
-        baseUrl: API_BASE,
-        body: { email, type },
-      });
-      return ok(data);
-    } catch (e) {
-      return fail(e);
-    }
+    const res = await otpSendAction({ email, type });
+    return res.ok ? ok(res.data) : fail(res.error);
   },
   async verifyEmail({ email, otp, type }: { email: string; otp: string; type?: string }) {
-    try {
-      const data = await request("/api/auth/otp/verify/", {
-        method: "POST",
-        baseUrl: API_BASE,
-        body: { email, otp, type },
-      });
-      return ok(data);
-    } catch (e) {
-      return fail(e);
-    }
+    const res = await otpVerifyAction({ email, otp, type });
+    return res.ok ? ok(res.data) : fail(res.error);
   },
 };
 
@@ -263,15 +192,8 @@ export const emailOtp = {
 const twoFactor = {
   /** Begin enrollment: returns { totpURI, backupCodes }. */
   async enable({ password }: { password: string }) {
-    try {
-      const data = await request<{ totpURI: string; backupCodes: string[] }>(
-        "/api/auth/2fa/enable/",
-        { method: "POST", token: getAccessToken(), baseUrl: API_BASE, body: { password } },
-      );
-      return ok(data);
-    } catch (e) {
-      return fail(e);
-    }
+    const res = await twoFactorEnableAction({ password });
+    return res.ok ? ok(res.data) : fail(res.error);
   },
   /**
    * Verify a TOTP code. Two contexts:
@@ -279,41 +201,20 @@ const twoFactor = {
    *  - In profile settings (already authenticated): confirm/activate enrollment.
    */
   async verifyTotp({ code }: { code: string }) {
-    try {
-      if (pendingPreAuthToken) {
-        const res = await request<{ access: string; refresh: string; user: AuthUser }>(
-          "/api/auth/2fa/login-verify/",
-          { method: "POST", baseUrl: API_BASE, body: { preAuthToken: pendingPreAuthToken, code } },
-        );
-        pendingPreAuthToken = null;
-        storeTokens(res.access, res.refresh);
-        if (res.user) setSession({ user: res.user }, false);
-        return ok({ user: res.user });
-      }
-
-      const data = await request("/api/auth/2fa/verify/", {
-        method: "POST",
-        token: getAccessToken(),
-        baseUrl: API_BASE,
-        body: { code },
-      });
-      return ok(data);
-    } catch (e) {
-      return fail(e);
+    if (pendingPreAuthToken) {
+      const res = await twoFactorLoginVerifyAction({ preAuthToken: pendingPreAuthToken, code });
+      if (!res.ok) return fail(res.error);
+      pendingPreAuthToken = null;
+      if (res.data.user) setSession({ user: res.data.user }, false);
+      return ok({ user: res.data.user });
     }
+
+    const res = await twoFactorVerifyAction({ code });
+    return res.ok ? ok(res.data) : fail(res.error);
   },
   async disable({ password }: { password: string }) {
-    try {
-      const data = await request("/api/auth/2fa/disable/", {
-        method: "POST",
-        token: getAccessToken(),
-        baseUrl: API_BASE,
-        body: { password },
-      });
-      return ok(data);
-    } catch (e) {
-      return fail(e);
-    }
+    const res = await twoFactorDisableAction({ password });
+    return res.ok ? ok(res.data) : fail(res.error);
   },
 };
 

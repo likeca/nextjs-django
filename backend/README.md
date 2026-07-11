@@ -42,6 +42,7 @@ async for author in Author.objects.filter(name__startswith="A"):
 
 ### Quick start
 
+```bash
 To set up a development environment quickly, first install Python 3. It
 comes with virtualenv built-in. So create a virtual env by: 1. `$ python3 -m venv {{ project_name }}` 2. `$ python -m pip install --upgrade pip` 3. `$ . {{ project_name }}/bin/activate`
 
@@ -53,14 +54,15 @@ Run migrations: # Update database change scripts
 python manage.py makemigrations
 
     # Update database change
-    python manage.py migrate
+    uv run python manage.py migrate
 
     # Create superuser
-    python manage.py createsuperuser
+    uv run python manage.py createsuperuser
 
 # Production Deployment
 
 daphne myproject.asgi:application
+```
 
 # django-allauth Google Authenticate
 

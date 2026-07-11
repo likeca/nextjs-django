@@ -1,17 +1,8 @@
 import type { NextConfig } from 'next';
 
-// Browser-facing Django API origin — must be in the CSP connect-src allowlist
-// so client components can fetch it.
-const apiOrigin = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
 const nextConfig: NextConfig = {
   output: 'standalone',
   async headers() {
-    // Dev: CSP's upgrade-insecure-requests/connect-src break the HMR
-    // websocket, making the browser reload the page in a loop.
-    if (process.env.NODE_ENV !== 'production') {
-      return [];
-    }
     return [
       {
         source: '/(.*)',
@@ -50,7 +41,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' blob: data: https:",
               "font-src 'self' data:",
               // `connect-src 'self' ${apiOrigin} https://us.i.posthog.com https://us-assets.i.posthog.com`,
-              `connect-src 'self' ${apiOrigin}`,
+              "connect-src 'self'",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",

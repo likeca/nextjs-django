@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { clientRequest } from "@/lib/api/browser";
-import { useState } from "react";
+import { useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { getGroups } from '@/actions/groups/get-groups';
 
 export function GroupsButton() {
   const [result, setResult] = useState<string | null>(null);
@@ -11,10 +12,7 @@ export function GroupsButton() {
   const handleClick = async () => {
     setLoading(true);
     try {
-      const data = await clientRequest("/api/groups/");
-      setResult(JSON.stringify(data, null, 2));
-    } catch (e) {
-      setResult(e instanceof Error ? e.message : "Request failed");
+      setResult(await getGroups());
     } finally {
       setLoading(false);
     }
@@ -23,13 +21,9 @@ export function GroupsButton() {
   return (
     <div className="flex flex-col gap-4">
       <Button size="lg" onClick={handleClick} disabled={loading}>
-        {loading ? "Loading..." : "Groups"}
+        {loading ? 'Loading...' : 'Groups'}
       </Button>
-      {result && (
-        <pre className="text-left p-4 rounded text-sm overflow-auto">
-          {result}
-        </pre>
-      )}
+      {result && <pre className="text-left p-4 rounded text-sm overflow-auto">{result}</pre>}
     </div>
   );
 }
