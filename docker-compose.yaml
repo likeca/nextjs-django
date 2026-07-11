@@ -4,8 +4,7 @@ services:
     container_name: backend
     build:
       context: backend
-    ports:
-      - "8000:8000"
+    network_mode: host
     env_file:
       - backend/nextjs_django/settings/local.env
     restart: unless-stopped
@@ -15,8 +14,7 @@ services:
     container_name: frontend
     build:
       context: frontend
-    ports:
-      - "3000:3000"
+    network_mode: host
     env_file:
       - frontend/.env
     depends_on:
