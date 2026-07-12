@@ -5,7 +5,6 @@ import { CookieConsent } from '@/components/cookie-consent';
 import { PostHogConsent } from '@/components/posthog-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import { appConfig } from '@/lib/config';
-import { PublicEnvScript } from 'next-runtime-env';
 import './globals.css';
 
 const outfit = Outfit({
@@ -86,9 +85,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <PublicEnvScript />
-      </head>
       <body className={`${outfit.variable} ${dmMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <PostHogConsent />

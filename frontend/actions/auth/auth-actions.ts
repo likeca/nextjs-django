@@ -2,7 +2,7 @@
 
 /**
  * Auth server actions — every auth call to Django happens here, on the
- * Next.js server, over API_INTERNAL_BASE (container network). The browser
+ * Next.js server, over API_BASE (container network). The browser
  * only ever talks to the Next.js origin.
  *
  * Tokens come back as cookies on the action response. They stay readable by
@@ -11,7 +11,7 @@
  */
 import { cookies, headers } from 'next/headers';
 
-import { API_INTERNAL_BASE, ApiError, request } from '@/lib/api/client';
+import { API_BASE, ApiError, request } from '@/lib/api/client';
 import { serverTry } from '@/lib/api/server';
 import type { AuthUser } from '@/lib/auth-client';
 
@@ -50,15 +50,58 @@ interface LoginPayload {
   preAuthToken?: string;
 }
 
+// ─── Google reCAPTCHA verification ────────────────────────────────────────────
+const RECAPTCHA_SITEVERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
+const CAPTCHA_FAILED = 'Security check failed. Please refresh the page and try again.';
+
+interface SiteverifyResponse {
+  success: boolean;
+  score?: number;
+  action?: string;
+  'error-codes'?: string[];
+}
+
+/**
+ * Verify a reCAPTCHA token with Google. Enforced only when
+ * GOOGLE_RECAPTCHA_SECRET_KEY is set; score/action checks apply when Google
+ * returns them (v3 does, v2 does not). Returns an error message, or null if
+ * the check passed / captcha is not configured.
+ */
+async function verifyCaptcha(token: string | undefined, expectedAction: string): Promise<string | null> {
+  const secret = process.env.GOOGLE_RECAPTCHA_SECRET_KEY;
+  if (!secret) return null;
+  if (!token) return CAPTCHA_FAILED;
+  try {
+    const res = await fetch(RECAPTCHA_SITEVERIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret, response: token }),
+      cache: 'no-store',
+    });
+    if (!res.ok) return CAPTCHA_FAILED;
+    const data = (await res.json()) as SiteverifyResponse;
+    if (!data.success) return CAPTCHA_FAILED;
+    if (data.action && data.action !== expectedAction) return CAPTCHA_FAILED;
+    const minScore = Number(process.env.GOOGLE_RECAPTCHA_MIN_SCORE ?? '0.5');
+    if (typeof data.score === 'number' && data.score < minScore) return CAPTCHA_FAILED;
+    return null;
+  } catch {
+    return 'Could not verify security check. Please try again.';
+  }
+}
+
 export async function loginAction(input: {
   email: string;
   password: string;
+  captchaToken?: string;
 }): Promise<AuthResult<{ user?: AuthUser; twoFactorRequired?: boolean; preAuthToken?: string }>> {
+  const captchaError = await verifyCaptcha(input.captchaToken, 'login');
+  if (captchaError) return { ok: false, error: captchaError };
   try {
     const res = await request<LoginPayload>('/api/auth/login/', {
       method: 'POST',
-      body: input,
-      baseUrl: API_INTERNAL_BASE,
+      body: { email: input.email, password: input.password },
+      baseUrl: API_BASE,
     });
     // 2FA-enabled account: no tokens yet — hand the pre-auth token back.
     if (res.twoFactorRequired && res.preAuthToken) {
@@ -77,19 +120,16 @@ export async function signupAction(input: {
   password: string;
 }): Promise<AuthResult<{ user: AuthUser | null }>> {
   try {
-    const res = await request<{ access?: string; refresh?: string; user?: AuthUser }>(
-      '/api/auth/registration/',
-      {
-        method: 'POST',
-        body: {
-          email: input.email,
-          name: input.name,
-          password1: input.password,
-          password2: input.password,
-        },
-        baseUrl: API_INTERNAL_BASE,
+    const res = await request<{ access?: string; refresh?: string; user?: AuthUser }>('/api/auth/registration/', {
+      method: 'POST',
+      body: {
+        email: input.email,
+        name: input.name,
+        password1: input.password,
+        password2: input.password,
       },
-    );
+      baseUrl: API_BASE,
+    });
     if (res.access) await setTokenCookies(res.access, res.refresh);
     return { ok: true, data: { user: res.user ?? null } };
   } catch (e) {
@@ -126,9 +166,7 @@ export async function changePasswordAction(input: {
   return 'error' in res ? { ok: false, error: res.error } : { ok: true, data: res.data };
 }
 
-export async function requestPasswordResetAction(input: {
-  email: string;
-}): Promise<AuthResult<unknown>> {
+export async function requestPasswordResetAction(input: { email: string }): Promise<AuthResult<unknown>> {
   const res = await serverTry('/api/auth/password/reset/', { method: 'POST', body: input });
   return 'error' in res ? { ok: false, error: res.error } : { ok: true, data: res.data };
 }
@@ -151,10 +189,7 @@ export async function resetPasswordAction(input: {
 }
 
 // ─── Email OTP ────────────────────────────────────────────────────────────────
-export async function otpSendAction(input: {
-  email: string;
-  type?: string;
-}): Promise<AuthResult<unknown>> {
+export async function otpSendAction(input: { email: string; type?: string }): Promise<AuthResult<unknown>> {
   const res = await serverTry('/api/auth/otp/send/', { method: 'POST', body: input });
   return 'error' in res ? { ok: false, error: res.error } : { ok: true, data: res.data };
 }
@@ -191,10 +226,11 @@ export async function twoFactorLoginVerifyAction(input: {
   code: string;
 }): Promise<AuthResult<{ user: AuthUser }>> {
   try {
-    const res = await request<{ access: string; refresh: string; user: AuthUser }>(
-      '/api/auth/2fa/login-verify/',
-      { method: 'POST', body: input, baseUrl: API_INTERNAL_BASE },
-    );
+    const res = await request<{ access: string; refresh: string; user: AuthUser }>('/api/auth/2fa/login-verify/', {
+      method: 'POST',
+      body: input,
+      baseUrl: API_BASE,
+    });
     await setTokenCookies(res.access, res.refresh);
     return { ok: true, data: { user: res.user } };
   } catch (e) {
@@ -202,9 +238,7 @@ export async function twoFactorLoginVerifyAction(input: {
   }
 }
 
-export async function twoFactorDisableAction(input: {
-  password: string;
-}): Promise<AuthResult<unknown>> {
+export async function twoFactorDisableAction(input: { password: string }): Promise<AuthResult<unknown>> {
   const res = await serverTry('/api/auth/2fa/disable/', { method: 'POST', body: input });
   return 'error' in res ? { ok: false, error: res.error } : { ok: true, data: res.data };
 }

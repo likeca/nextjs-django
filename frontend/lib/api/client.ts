@@ -8,17 +8,10 @@
  * server code stays safe as long as those helpers are called in the browser.
  */
 
-import { env } from 'next-runtime-env';
-
-// Optional public Django origin. When unset (the default), the browser talks
-// to the same-origin proxy at /api/backend (app/api/backend/[...path]), which
-// forwards to Django over API_INTERNAL_URL — Django stays private.
-const publicApiUrl = env('NEXT_PUBLIC_API_URL');
-
-export const API_BASE = publicApiUrl || '/api/backend';
-
-// Server-to-server base URL (e.g. container networking).
-export const API_INTERNAL_BASE = process.env.API_INTERNAL_URL || 'http://localhost:8000';
+// In the browser API_INTERNAL_URL is never inlined (not NEXT_PUBLIC_), so
+// client code falls back to the same-origin /api/backend proxy — Django stays
+// private. Server code gets the internal origin directly.
+export const API_BASE = process.env.API_INTERNAL_URL || 'http://localhost:8000';
 
 export class ApiError extends Error {
   status: number;
@@ -45,8 +38,6 @@ export interface RequestOptions {
 
 function buildUrl(path: string, baseUrl: string, query?: RequestOptions['query']) {
   const base = baseUrl.replace(/\/?$/, '/');
-  // A relative base (the same-origin /api/backend proxy) only exists in the
-  // browser; server code must pass an absolute baseUrl (API_INTERNAL_BASE).
   const url = base.startsWith('/')
     ? new URL(base + path.replace(/^\//, ''), window.location.origin)
     : new URL(path.replace(/^\//, ''), base);

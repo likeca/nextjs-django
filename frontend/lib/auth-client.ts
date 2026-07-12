@@ -106,8 +106,17 @@ let pendingPreAuthToken: string | null = null;
 
 // ─── signIn / signUp / signOut ────────────────────────────────────────────────
 export const signIn = {
-  async email({ email, password }: { email: string; password: string; callbackURL?: string }) {
-    const res = await loginAction({ email, password });
+  async email({
+    email,
+    password,
+    captchaToken,
+  }: {
+    email: string;
+    password: string;
+    captchaToken?: string;
+    callbackURL?: string;
+  }) {
+    const res = await loginAction({ email, password, captchaToken });
     if (!res.ok) return fail(res.error);
 
     // 2FA-enabled account: no tokens yet — surface the redirect the login form expects.

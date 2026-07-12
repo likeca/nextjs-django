@@ -36,12 +36,14 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://us-assets.i.posthog.com",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+              // www.google.com + www.gstatic.com: Google reCAPTCHA
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google.com https://www.gstatic.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' blob: data: https:",
               "font-src 'self' data:",
               // `connect-src 'self' ${apiOrigin} https://us.i.posthog.com https://us-assets.i.posthog.com`,
-              "connect-src 'self'",
+              "connect-src 'self' https://www.google.com",
+              "frame-src https://www.google.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",

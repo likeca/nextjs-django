@@ -10,7 +10,7 @@
  */
 import { cookies } from 'next/headers';
 
-import { ApiError, API_INTERNAL_BASE, request, type RequestOptions } from './client';
+import { ApiError, API_BASE, request, type RequestOptions } from './client';
 
 export const ACCESS_COOKIE = 'access_token';
 export const REFRESH_COOKIE = 'refresh_token';
@@ -23,7 +23,7 @@ export async function getServerToken(): Promise<string | null> {
 /** Authenticated server request (attaches the JWT from cookies). */
 export async function serverRequest<T = unknown>(path: string, opts: RequestOptions = {}): Promise<T> {
   const token = await getServerToken();
-  return request<T>(path, { ...opts, token, baseUrl: API_INTERNAL_BASE });
+  return request<T>(path, { ...opts, token, baseUrl: API_BASE });
 }
 
 /**
