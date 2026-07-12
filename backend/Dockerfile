@@ -19,4 +19,4 @@ RUN mkdir -p logs
 EXPOSE 8000
 # Daphne (ASGI) instead of the single-threaded dev server; asgi.py picks the
 # settings module from DJANGO_ENVIRONMENT (defaults to container).
-CMD ["uv", "run", "daphne", "-b", "-p", "8000", "nextjs_django.asgi:application"]
+CMD ["uv", "run", "daphne", "-p", "8000", "nextjs_django.asgi:application"]
