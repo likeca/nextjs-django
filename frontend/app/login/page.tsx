@@ -6,7 +6,6 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { LoginForm } from '@/components/login-form';
 import { buildMetadata } from '@/lib/seo';
-import { env } from '@/lib/env';
 
 export const metadata = buildMetadata({
   title: 'Sign In',
@@ -32,7 +31,7 @@ export default async function LoginPage() {
         <div className="flex w-full max-w-sm flex-col gap-6">
           <h1 className="sr-only">Sign in to your account</h1>
           <Logo className="self-center" />
-          <LoginForm recaptchaSiteKey={env.GOOGLE_RECAPTCHA_SITE_KEY ?? ''} />
+          <LoginForm recaptchaSiteKey={process.env.GOOGLE_RECAPTCHA_SITE_KEY ?? ''} />
         </div>
       </div>
       <Footer />
