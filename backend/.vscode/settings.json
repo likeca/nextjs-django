@@ -1,6 +1,6 @@
 {
     "pylint.args": [
-        "--django-settings-module=nextjs_django.settings",
+        "--django-settings-module=backend.settings",
         "--disable=line-too-long",
         "--disable=missing-function-docstring",
         "--disable=missing-class-docstring",

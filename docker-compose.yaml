@@ -6,7 +6,7 @@ services:
       context: backend
     network_mode: host
     env_file:
-      - backend/nextjs_django/settings/local.env
+      - backend/backend/settings/local.env
     restart: unless-stopped
 
   frontend:

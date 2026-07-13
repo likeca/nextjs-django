@@ -25,7 +25,7 @@ DJANGO_ENVIRONMENT=Development uv run python manage.py test profiles            
 DJANGO_ENVIRONMENT=Development uv run python manage.py test profiles.tests.SomeTestCase.test_name   # single test
 ```
 
-`DJANGO_ENVIRONMENT` selects the settings module in `manage.py`: `Development`, `Container`, or (default) `virtualmachine` — all under `nextjs_django/settings/environments/`. Topic-specific settings (database, rest, stripe, email, allauth, graphql, …) are split into files under `nextjs_django/settings/`; env vars are read with django-environ (compose loads `backend/nextjs_django/settings/local.env`).
+`DJANGO_ENVIRONMENT` selects the settings module in `manage.py`: `Development`, `Container`, or (default) `virtualmachine` — all under `backend/settings/environments/` (the Django project package is `backend/backend/`). Topic-specific settings (database, rest, stripe, email, allauth, graphql, …) are split into files under `backend/settings/`; env vars are read with django-environ (compose loads `backend/backend/settings/local.env`).
 
 PostgreSQL is required (models use `ArrayField`). The database is a hosted Postgres reached via `DATABASE_URL` — the root docker-compose has **no local db service**.
 

@@ -4,11 +4,11 @@ For local development "python manage.py runserver"
 import os
 
 if os.environ.get("DJANGO_ENVIRONMENT") == "Development":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nextjs_django.settings.environments.development")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings.environments.development")
 elif os.environ.get("DJANGO_ENVIRONMENT") == "Container":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nextjs_django.settings.environments.container")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings.environments.container")
 else:
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nextjs_django.settings.environments.virtualmachine")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings.environments.virtualmachine")
 
 from django.core.wsgi import get_wsgi_application
 

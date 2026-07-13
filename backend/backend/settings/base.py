@@ -82,8 +82,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 # django-allauth needs this from django
                 "django.template.context_processors.request",
-                # global settings for templates. Need update nextjs_django to project folder name
-                "nextjs_django.context_processors.global_settings",
+                # global settings for templates. Need update backend to project folder name
+                "backend.context_processors.global_settings",
             ],
         },
     },
@@ -157,8 +157,8 @@ MIDDLEWARE = (
     "allauth.account.middleware.AccountMiddleware",
 )
 
-ROOT_URLCONF = "nextjs_django.urls"
-ASGI_APPLICATION = "nextjs_django.asgi.application"
+ROOT_URLCONF = "backend.urls"
+ASGI_APPLICATION = "backend.asgi.application"
 
 
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

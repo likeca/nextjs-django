@@ -108,7 +108,7 @@ python manage.py ping_google
 
 # Daphne
 
-daphne nextjs_django.asgi:application
+daphne backend.asgi:application
 
 # Django Auto Translate - django-autotranslate
 

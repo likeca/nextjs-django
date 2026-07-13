@@ -8,11 +8,11 @@ https://docs.djangoproject.com/en/dev/howto/deployment/asgi/
 import os
 
 if os.environ.get("DJANGO_ENVIRONMENT") == "Development":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nextjs_django.settings.environments.development")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings.environments.development")
 elif os.environ.get("DJANGO_ENVIRONMENT") == "VirtualMachine":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nextjs_django.settings.environments.virtualmachine")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings.environments.virtualmachine")
 else:
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nextjs_django.settings.environments.container")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings.environments.container")
 
 from django.core.asgi import get_asgi_application
 

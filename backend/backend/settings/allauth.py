@@ -20,8 +20,8 @@ ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
 ACCOUNT_FORMS = {
-    "signup": "nextjs_django.forms.AllauthSignupForm",
-    "login": "nextjs_django.forms.AllauthSigninForm",
+    "signup": "backend.forms.AllauthSignupForm",
+    "login": "backend.forms.AllauthSigninForm",
 }
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 LOGIN_REDIRECT_URL = reverse_lazy("profiles:show_self")  # Redirect after sign in

@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from PIL import Image
 
 from django_countries.fields import CountryField
-from nextjs_django.constants import PROVINCE
+from backend.constants import PROVINCE
 
 # Local Storage
 from django.core.files.storage import FileSystemStorage

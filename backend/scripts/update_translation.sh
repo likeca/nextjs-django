@@ -1,8 +1,8 @@
 # Create the message file
-# source $PWD/.venv/bin/activate && ./src/manage.py makemessages -l fr --pythonpath $PWD/nextjs_django
-# source $PWD/.venv/bin/activate && ./src/manage.py makemessages -l zh-cn --pythonpath $PWD/nextjs_django
+# source $PWD/.venv/bin/activate && ./src/manage.py makemessages -l fr --pythonpath $PWD/backend
+# source $PWD/.venv/bin/activate && ./src/manage.py makemessages -l zh-cn --pythonpath $PWD/backend
 
-# Update existing messages file, execute from nextjs_django/scripts/
+# Update existing messages file, execute from backend/scripts/
 PROJECT_PATH=$PWD
 cd src
 source $PROJECT_PATH/.venv/bin/activate && ./manage.py makemessages -a
