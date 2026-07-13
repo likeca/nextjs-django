@@ -17,6 +17,7 @@ RUN npm install -g pnpm@latest
 COPY . .
 
 ARG DATABASE_URL
+ARG BETTER_AUTH_SECRET
 ARG NEXT_PUBLIC_APP_NAME
 ARG NEXT_PUBLIC_APP_DESCRIPTION
 ARG NEXT_PUBLIC_APP_URL
@@ -25,12 +26,13 @@ ARG NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION
 
 ENV CI=true
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV DATABASE_URL=${DATABASE_URL}
-ENV NEXT_PUBLIC_APP_NAME=${NEXT_PUBLIC_APP_NAME}
-ENV NEXT_PUBLIC_APP_DESCRIPTION=${NEXT_PUBLIC_APP_DESCRIPTION}
-ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
-ENV NEXT_PUBLIC_ENABLE_TWO_FACTOR=${NEXT_PUBLIC_ENABLE_TWO_FACTOR}
-ENV NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION=${NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION}
+ENV DATABASE_URL=${DATABASE_URL:-postgres://build:build@localhost:5432/build}
+ENV BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-build-time-placeholder-secret-32-chars-min}
+ENV NEXT_PUBLIC_APP_NAME=${NEXT_PUBLIC_APP_NAME:-"NextJS SaaS App"}
+ENV NEXT_PUBLIC_APP_DESCRIPTION=${NEXT_PUBLIC_APP_DESCRIPTION:-"A production-ready SaaS boilerplate"}
+ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+ENV NEXT_PUBLIC_ENABLE_TWO_FACTOR=${NEXT_PUBLIC_ENABLE_TWO_FACTOR:-false}
+ENV NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION=${NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION:-true}
 
 # RUN pnpm prisma generate
 RUN pnpm build
@@ -45,18 +47,11 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-# COPY --from=builder /app/prisma ./prisma
-# COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/lib ./lib
 COPY --from=builder /app/package.json ./package.json
-# COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="localhost"
 
 CMD ["node", "server.js"]
-
-# Full node_modules
-# COPY --from=dependencies /app/node_modules ./node_modules
-# CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
