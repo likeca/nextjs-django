@@ -37,12 +37,14 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               // "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://us-assets.i.posthog.com",
               // www.google.com + www.gstatic.com: Google reCAPTCHA
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google.com https://www.gstatic.com",
+              // static.cloudflareinsights.com: Cloudflare Web Analytics beacon (auto-injected by Cloudflare proxy/tunnel)
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://static.cloudflareinsights.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' blob: data: https:",
               "font-src 'self' data:",
               // `connect-src 'self' ${apiOrigin} https://us.i.posthog.com https://us-assets.i.posthog.com`,
-              "connect-src 'self' https://www.google.com",
+              // cloudflareinsights.com: Cloudflare Web Analytics beacon posts RUM data here
+              "connect-src 'self' https://www.google.com https://cloudflareinsights.com",
               "frame-src https://www.google.com",
               "object-src 'none'",
               "base-uri 'self'",
