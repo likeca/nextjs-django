@@ -128,7 +128,7 @@ INSTALLED_APPS = (
     # Combined-monorepo apps (mirror the former Next.js Prisma schema)
     "accounts",
     # "blog",
-    # "billing",
+    "billing",
     # "core",
     "profiles",
     "tenants",

@@ -189,3 +189,10 @@ python manage.py runserver
 # Bootstrap 5 Tree View
 
 https://github.com/nhmvienna/bs5treeview
+
+# Load Plan
+
+```bash
+uv python manage.py loaddata plans
+
+```

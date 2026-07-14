@@ -16,18 +16,17 @@ from accounts.views import (
     TwoFactorVerifyView,
     UserViewSet,
 )
-# billing app disabled — see INSTALLED_APPS
-# from billing.views import (
-#     CancelSubscriptionView,
-#     CreateBillingPortalSessionView,
-#     CreateCheckoutSessionView,
-#     PaymentViewSet,
-#     PlanViewSet,
-#     ResumeSubscriptionView,
-#     SubscriptionViewSet,
-#     VerifyCheckoutSessionView,
-# )
-# from billing.webhooks import stripe_webhook
+from billing.views import (
+    CancelSubscriptionView,
+    CreateBillingPortalSessionView,
+    CreateCheckoutSessionView,
+    PaymentViewSet,
+    PlanViewSet,
+    ResumeSubscriptionView,
+    SubscriptionViewSet,
+    VerifyCheckoutSessionView,
+)
+from billing.webhooks import stripe_webhook
 # blog app disabled — see INSTALLED_APPS
 # from blog.views import BlogViewSet
 # core app disabled — see INSTALLED_APPS
@@ -51,10 +50,9 @@ router.register("permissions", PermissionViewSet, basename="permission")
 # core routes disabled
 # router.register("settings", SettingViewSet, basename="setting")
 # router.register("contact", ContactSubmissionViewSet, basename="contact")
-# billing routes disabled
-# router.register("billing/plans", PlanViewSet, basename="plan")
-# router.register("billing/subscriptions", SubscriptionViewSet, basename="subscription")
-# router.register("billing/payments", PaymentViewSet, basename="payment")
+router.register("billing/plans", PlanViewSet, basename="plan")
+router.register("billing/subscriptions", SubscriptionViewSet, basename="subscription")
+router.register("billing/payments", PaymentViewSet, basename="payment")
 # router.register("api-keys", ApiKeyViewSet, basename="apikey")
 # router.register("organizations", OrganizationViewSet, basename="organization")
 
@@ -88,13 +86,13 @@ urlpatterns = [
         name="email_change_confirm",
     ),
     path("dashboard/stats/", DashboardStatsView.as_view(), name="dashboard_stats"),
-    # ─── Stripe (billing app disabled) ───────────────────────────────────────
-    # path("billing/checkout/", CreateCheckoutSessionView.as_view(), name="billing_checkout"),
-    # path("billing/portal/", CreateBillingPortalSessionView.as_view(), name="billing_portal"),
-    # path("billing/cancel/", CancelSubscriptionView.as_view(), name="billing_cancel"),
-    # path("billing/resume/", ResumeSubscriptionView.as_view(), name="billing_resume"),
-    # path("billing/verify-session/", VerifyCheckoutSessionView.as_view(), name="billing_verify"),
-    # path("billing/webhook/", stripe_webhook, name="billing_webhook"),
+    # ─── Stripe ──────────────────────────────────────────────────────────────
+    path("billing/checkout/", CreateCheckoutSessionView.as_view(), name="billing_checkout"),
+    path("billing/portal/", CreateBillingPortalSessionView.as_view(), name="billing_portal"),
+    path("billing/cancel/", CancelSubscriptionView.as_view(), name="billing_cancel"),
+    path("billing/resume/", ResumeSubscriptionView.as_view(), name="billing_resume"),
+    path("billing/verify-session/", VerifyCheckoutSessionView.as_view(), name="billing_verify"),
+    path("billing/webhook/", stripe_webhook, name="billing_webhook"),
     # ─── Resource API (replaces the Next.js server actions) ──────────────────
     path("groups/", views.GroupView.as_view()),
     path("", include(router.urls)),
