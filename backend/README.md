@@ -43,24 +43,19 @@ async for author in Author.objects.filter(name__startswith="A"):
 ### Quick start
 
 ```bash
-To set up a development environment quickly, first install Python 3. It
-comes with virtualenv built-in. So create a virtual env by: 1. `$ python3 -m venv {{ project_name }}` 2. `$ python -m pip install --upgrade pip` 3. `$ . {{ project_name }}/bin/activate`
+# Install all dependencies:
+uv sync
 
-Install all dependencies:
+# Run migrations: # Update database change scripts
+uv run manage.py makemigrations
 
-    pip install -r requirements.txt
+# Update database change
+uv run manage.py migrate
 
-Run migrations: # Update database change scripts
-python manage.py makemigrations
-
-    # Update database change
-    uv run python manage.py migrate
-
-    # Create superuser
-    uv run python manage.py createsuperuser
+# Create superuser
+uv run manage.py createsuperuser
 
 # Production Deployment
-
 daphne myproject.asgi:application
 ```
 
@@ -74,7 +69,7 @@ https://console.developers.google.com/
 # Django create app add to project
 
 ```bash
-(venv)$ python manage.py startapp <new_app>
+(venv)$ uv run manage.py startapp <new_app>
 ```
 
 # Update Table (Drop Table Method)
@@ -82,9 +77,9 @@ https://console.developers.google.com/
 ## Method 1:
 
 1. Delete application relate tables and data
-   $ python manage.py migrate registrationform zero
+   $ uv run manage.py migrate registrationform zero
 2. Recreate Table
-   $ python manage.py ./manage.py migrate
+   $ uv run manage.py ./manage.py migrate
 
 ## Method 2:
 
@@ -92,9 +87,9 @@ https://console.developers.google.com/
 2. Update exported data
 3. Drop Table from database
 4. Update Drop Table status in Django
-   $ python manage.py ./manage.py migrate --fake [table_name] zero
+   $ uv run manage.py ./manage.py migrate --fake [table_name] zero
 5. Recreate Table
-   $ python manage.py ./manage.py migrate
+   $ uv run manage.py ./manage.py migrate
 
 # Django SEO
 
@@ -103,7 +98,7 @@ Registered your site with Google Webmaster Tools.
 [Google Search Console](https://www.google.com/webmasters/tools/)
 
 ```bash
-python manage.py ping_google
+uv run manage.py ping_google
 ```
 
 # Daphne
@@ -114,16 +109,16 @@ daphne backend.asgi:application
 
 ```bash
 # Translate language
-python manage.py makemessages -a
-python manage.py makemessages -l fr
-python manage.py makemessages -l zh_Hans
+uv run manage.py makemessages -a
+uv run manage.py makemessages -l fr
+uv run manage.py makemessages -l zh_Hans
 
 # Compile language po for production
-python manage.py compilemessages -l fr -l zh_Hans
+uv run manage.py compilemessages -l fr -l zh_Hans
 
 # django-autotranslate (User custom version)
-python manage.py translate_messages -u -f
-python manage.py compilemessages
+uv run manage.py translate_messages -u -f
+uv run manage.py compilemessages
 ```
 
 # gettext() vs gettext_lazy()
@@ -138,12 +133,12 @@ In views and similar function calls you can use gettext without problems, becaus
 
 # Provide initial data
 
-python manage.py loaddata api/books.json
+uv run manage.py loaddata api/books.json
 
 # Generating an OpenAPI Schema
 
 ```bash
-python manage.py generateschema --file static/site/openapi/schema.yaml
+uv run manage.py generateschema --file static/site/openapi/schema.yaml
 ```
 
 # Google Login "Invalid id_token"
@@ -154,7 +149,7 @@ dj-rest-auth==4.0.1
 # Test SendEmail
 
 ```bash
-python manage.py shell
+uv run manage.py shell
 
 >>> from dharro.utils import SendEmail
 >>> SendEmail('test', 'test')
@@ -164,26 +159,26 @@ python manage.py shell
 
 ```bash
 # Apply all change to DB
-python manage.py migrate
+uv run manage.py migrate
 
 # Squash merge from 0003_faqcategory_order (last migration) to 0002_faqcategory_faqs
-python manage.py squashmigrations products 0002_faqcategory_faqs 0003_faqcategory_order
+uv run manage.py squashmigrations products 0002_faqcategory_faqs 0003_faqcategory_order
 
 # Delete migrations and rename squash migrations to
 0002_squash_0002_faqcategory_faqs.py -> 0002_faqcategory_faqs.py
 
 # Validate the squash merge migraiton
-python manage.py makemigration
-python manage.py migrate
+uv run manage.py makemigration
+uv run manage.py migrate
 
 # Show migration
-python manage.py showmigrations
+uv run manage.py showmigrations
 ```
 
 # Django Browser Reload
 
 ```bash
-python manage.py runserver
+uv run manage.py runserver
 ```
 
 # Bootstrap 5 Tree View
@@ -193,6 +188,7 @@ https://github.com/nhmvienna/bs5treeview
 # Load Plan
 
 ```bash
-uv python manage.py loaddata plans
+uv run manage.py loaddata plans
+uv run manage.py loaddata plans
 
 ```
