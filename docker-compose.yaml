@@ -1,6 +1,6 @@
 services:
   backend:
-    image: likeca/django
+    image: ghcr.io/likeca/nextjs-django-backend:latest
     container_name: backend
     build:
       context: backend
@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: likeca/nextjs
+    image: ghcr.io/likeca/nextjs-django-frontend:latest
     container_name: frontend
     build:
       context: frontend
